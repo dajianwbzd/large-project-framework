@@ -5,6 +5,8 @@
 
 当前版本：**v5.28.0**（版本口径以 `agent.md` frontmatter 为准）
 
+**简体中文** | [English](README.en.md)
+
 ---
 
 ## 这是什么 / 不是什么
