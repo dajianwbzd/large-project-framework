@@ -1,0 +1,10 @@
+{
+  "role": "项目经理",
+  "status": "pending",
+  "updated": "",
+  "summary": "工作完成后更新：里程碑、阻塞、关卡状态",
+  "deliverables": [],
+  "cards": {},
+  "open_issues": [],
+  "notes": "规则：项目经理 汇总各角色进度，overall.json 为汇总报告；中途接管项目时在此文件记录工作区完整性盘点结果（见 协作规范.md §5）。"
+}

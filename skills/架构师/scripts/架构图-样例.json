@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Sample Web App（框架版规约）",
+    "cards": ["card-001", "REQ-1.1"]
+  },
+  "components": [
+    { "id": "users", "type": "external", "label": "Users", "sources": [{"path": "src/users.ts", "line": 1}] },
+    { "id": "auth", "type": "security", "label": "Auth Provider", "sources": [{"path": "src/auth/jwt.ts", "line": 42}] },
+    { "id": "cdn", "type": "cloud", "label": "CloudFront" },
+    { "id": "lb", "type": "cloud", "label": "Load Balancer" },
+    { "id": "api", "type": "backend", "label": "API Server", "sources": [{"path": "src/api/main.py", "line": 10}] },
+    { "id": "cache", "type": "database", "label": "Redis" },
+    { "id": "db", "type": "database", "label": "PostgreSQL", "sources": [{"path": "src/api/db.py", "line": 5}] },
+    { "id": "s3", "type": "cloud", "label": "S3" },
+    { "id": "queue", "type": "messagebus", "label": "SQS" },
+    { "id": "worker", "type": "backend", "label": "Worker" }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "AWS Region: us-west-2", "wraps": ["cdn", "lb", "api", "cache", "db", "s3", "queue", "worker"] },
+    { "kind": "security-group", "label": "sg-api :443/:8000", "wraps": ["lb", "api"] }
+  ],
+  "connections": [
+    { "from": "users", "to": "cdn", "label": "HTTPS" },
+    { "from": "auth", "to": "api", "label": "verify JWT" },
+    { "from": "cdn", "to": "lb", "label": "HTTP" },
+    { "from": "cdn", "to": "s3", "label": "static" },
+    { "from": "lb", "to": "api", "label": "HTTP" },
+    { "from": "api", "to": "cache", "label": "read-through" },
+    { "from": "api", "to": "db", "label": "SQL" },
+    { "from": "api", "to": "queue", "label": "enqueue" },
+    { "from": "queue", "to": "worker", "label": "poll" }
+  ]
+}

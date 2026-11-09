@@ -1,0 +1,10 @@
+{
+  "role": "架构师",
+  "status": "pending",
+  "updated": "",
+  "summary": "工作完成后更新：本次做了什么、产出了什么",
+  "deliverables": [],
+  "cards": {},
+  "open_issues": [],
+  "notes": "规则：每次角色工作结束必须更新本文件；没有落盘 = 没干（见 协作规范.md）。overall.json 仅作 项目经理 汇总，角色详情必须落在此文件。"
+}

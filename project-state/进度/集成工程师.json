@@ -1,0 +1,10 @@
+{
+  "role": "集成工程师",
+  "status": "pending",
+  "updated": "",
+  "summary": "工作完成后更新：本次联调验证了什么、结论如何",
+  "deliverables": [],
+  "cards": {},
+  "open_issues": [],
+  "notes": "规则：每次角色工作结束必须更新本文件；没有落盘 = 没干（见 协作规范.md）。验收闸门：完成定义.md；结论并入 overall.json 的 GO/NO-GO 合并。"
+}

@@ -1,0 +1,10 @@
+{
+  "role": "安全审计",
+  "status": "pending",
+  "updated": "",
+  "summary": "工作完成后更新：扫描了什么、发现什么、结论如何",
+  "deliverables": [],
+  "cards": {},
+  "open_issues": [],
+  "notes": "规则：每次角色工作结束必须更新本文件；没有落盘 = 没干（见 协作规范.md）。漏洞写入 问题/安全问题/ 并在此文件 open_issues 登记。"
+}

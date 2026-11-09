@@ -1,0 +1,10 @@
+{
+  "role": "测试工程师",
+  "status": "pending",
+  "updated": "",
+  "summary": "工作完成后更新：测试轮次、环境、用例统计、结论",
+  "deliverables": [],
+  "cards": {},
+  "open_issues": [],
+  "notes": "规则：每次角色工作结束必须更新本文件 + 代码/测试/开发说明.md；没有落盘 = 没干（见 协作规范.md）。Bug 写入 问题/测试问题/ 并在此文件 open_issues 登记。"
+}

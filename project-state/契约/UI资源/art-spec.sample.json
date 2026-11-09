@@ -1,0 +1,36 @@
+{
+  "_about": "资产规格：game 域美术资产的机器可读契约。复制为 契约/UI资源/art-spec.json 后按项目改。消费者：skills/UI设计师/scripts/art_lint.py（硬门禁，errors==0）。",
+  "_tokens_source": "palette 段只列引用哪些令牌名；色值从 契约/DESIGN.md 的 colors 段解析——禁止在此复制色值。",
+
+  "naming": {
+    "prefixes": {
+      "texture": "T_",
+      "static_mesh": "SM_",
+      "skeletal_mesh": "SK_",
+      "material": "M_",
+      "material_instance": "MI_",
+      "widget": "WBP_",
+      "particle": "PS_",
+      "anim_sequence": "A_",
+      "data_table": "DT_"
+    },
+    "suffixes": {
+      "texture": ["_D", "_N", "_R", "_M", "_O", "_E", "_A", "_ERO"]
+    },
+    "banned_words": ["final", "new", "copy", "test", "old", "fixed", "revised", "temp", "backup"]
+  },
+
+  "textures": {
+    "max_resolution": 2048,
+    "require_power_of_two": true,
+    "max_file_size_mb": 5
+  },
+
+  "allowed_formats": [".png", ".tga"],
+
+  "palette": {
+    "use_tokens": ["primary", "ink", "night", "stone", "mist", "bone", "gold", "leaf"],
+    "delta_e_max": 5.0,
+    "coverage_min": 0.85
+  }
+}

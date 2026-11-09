@@ -1,0 +1,17 @@
+# API 契约（OpenAPI 3.0）
+
+> 架构师产出初稿，经前端/后端接口协商后定稿。契约是前后端开发的唯一真理来源。
+
+openapi: 3.0.0
+info:
+  title: <项目名>
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  # 在此定义端点，如：
+  # /users:
+  #   post:
+  #     summary: 创建用户
+  #     requestBody: ...
+  #     responses: ...

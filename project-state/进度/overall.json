@@ -1,0 +1,11 @@
+{
+  "phase": "init",
+  "version": "3.2.0",
+  "overall_progress": 0,
+  "milestones": [],
+  "blockers": [],
+  "risks": [],
+  "trend": {"done_delta": 0, "avg_card_cycle": "", "velocity": "steady"},
+  "ship_checklist": "pending",
+  "last_updated": ""
+}

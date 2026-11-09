@@ -1,0 +1,364 @@
+{
+  "schema": "ux-clauses/1.0",
+  "project": "<项目名>（模板：复制到 project-state/契约/ux/clauses.json 后逐条填 params）",
+  "contract": "project-state/契约/EXPERIENCE.md",
+  "owner": "测试工程师（可判条款 L1/L2/L3）｜UI设计师（判断类 L4）｜产品经理（只裁决放行）",
+  "scan_globs": ["*.html", "*.htm", "*.css", "*.scss", "*.js", "*.mjs", "*.cjs", "*.jsx", "*.ts", "*.tsx", "*.vue", "*.svelte"],
+  "discipline": {
+    "threshold": "L3 像素：pixelmatch threshold=0.1（忽略抗锯齿）；先连跑 10 次取差异峰值 ×2 当阈值；diff>500px 或 ratio>0.05 判「掩蔽」（先查尺寸/DPR/主题/动画，别调阈值）",
+    "skipped": "params 未填 / 规则未实现 / 无基线 → 一律 skipped 且必须写原因，不当作通过",
+    "full_only": "只有 full 档才允许在账本写 pass；smoke 只能写「冒烟未见异常」",
+    "contract_gap": "本文件每条 id 必须能在 EXPERIENCE.md 找到；对不上 = 契约缺口，提 CR 回填，不许现场编"
+  },
+  "clauses": [
+    {
+      "id": "UX-FND-01",
+      "title": "令牌源唯一",
+      "clause": "形态与 UI 系统只在本节声明一次，实现不得另起第二份令牌源",
+      "judgment": "实现里令牌/主题变量的定义文件唯一，且版本与本节声明一致",
+      "layer": "L1",
+      "check_kind": "static",
+      "check_rule": "unique_declaration",
+      "params": {
+        "property": "--color-primary",
+        "globs": ["*.css", "*.scss", "*.js", "*.ts"],
+        "_fill": "把 --color-primary 换成项目的主题变量（如 --bg / --ink）；一个变量只允许在一个文件里定义"
+      },
+      "evidence": "ux_gate/static_check.py JSON",
+      "contract": "EXPERIENCE.md · Foundation",
+      "level": "full",
+      "groups": []
+    },
+    {
+      "id": "UX-FND-02",
+      "title": "只写差异不复制规格",
+      "clause": "只写与 UI 系统的差异，不复制其通用规格",
+      "judgment": "契约对通用组件只给差异项（无整段复制），走查时逐条对得上",
+      "layer": "L4",
+      "check_kind": "review",
+      "check_rule": "",
+      "params": {},
+      "evidence": "走查结论（UI设计师 Pass 2'，落账本）",
+      "contract": "EXPERIENCE.md · Foundation",
+      "level": "full",
+      "groups": []
+    },
+    {
+      "id": "UX-IA-01",
+      "title": "surface closure 成立",
+      "clause": "每个需求有交付界面，每个界面有落到它的旅程",
+      "judgment": "界面清单 × 需求表 × 旅程表三张名单逐名对齐，缺一即不通过",
+      "layer": "L1",
+      "check_kind": "static",
+      "check_rule": "clause_instances_present",
+      "params": {
+        "page": "",
+        "_fill": "填主入口页文件名（如 index.html）。**弱覆盖**：本规则只校验对象文件存在；三表对齐由项目经理的台账核，别当成 closure 已证"
+      },
+      "evidence": "ux_gate/static_check.py JSON + 项目经理台账",
+      "contract": "EXPERIENCE.md · Information Architecture",
+      "level": "full",
+      "groups": []
+    },
+    {
+      "id": "UX-IA-02",
+      "title": "入口 ≤2 步可达",
+      "clause": "任一界面从首屏起 ≤2 步可达（主流程不埋）",
+      "judgment": "入口可达性断言（导航路径长度）+ 入口发现性判断",
+      "layer": "L2+L4",
+      "check_kind": "runtime",
+      "check_rule": "in_viewport",
+      "params": {
+        "selector": "",
+        "_fill": "填主流程入口选择器。**弱覆盖**：机器只证「入口首屏可见且不越界」；步数 ≤2 与发现性由 L4 走查判"
+      },
+      "evidence": "断言 JSON + 走查结论",
+      "contract": "EXPERIENCE.md · Information Architecture",
+      "level": "full",
+      "groups": ["nav"]
+    },
+    {
+      "id": "UX-VOT-01",
+      "title": "破坏性文案写后果",
+      "clause": "确认按钮不得只写「确定/是/OK」，破坏性操作文案必须写后果",
+      "judgment": "静态扫描（只读源码文案表）：命中禁用词且无同句后果说明 = 违例",
+      "layer": "L1",
+      "check_kind": "static",
+      "check_rule": "forbid_words",
+      "params": {
+        "words": ["确定", "是", "OK"],
+        "allow_context": ["data-allow-word"],
+        "_fill": "禁词按项目文案表改；allow_context 放行已带后果说明的行（如 delete-forever）"
+      },
+      "evidence": "ux_gate/static_check.py JSON",
+      "contract": "EXPERIENCE.md · Voice and Tone",
+      "level": "full",
+      "groups": []
+    },
+    {
+      "id": "UX-VOT-02",
+      "title": "空态/错误态文案按规则落地",
+      "clause": "空态/错误态文案按上表四类规则落地",
+      "judgment": "逐状态核对文案实际渲染文本",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "text_present",
+      "params": {
+        "selector": "",
+        "contains": "",
+        "_fill": "selector 填空态容器，contains 填必须出现的动作引导词（如「新建」）"
+      },
+      "evidence": "断言 JSON（渲染文本快照）",
+      "contract": "EXPERIENCE.md · Voice and Tone",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-CMP-01",
+      "title": "浮层焦点闭环",
+      "clause": "浮层：打开即聚焦、焦点不逃逸、Esc 可关、关闭后焦点归位",
+      "judgment": "CDP 相对断言：activeElement 在浮层内 → Tab 一圈后仍在浮层内 → Esc 后回到触发元素",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "overlay_focus",
+      "params": {
+        "trigger_selector": "",
+        "overlay_selector": "",
+        "close_key": "Escape",
+        "_fill": "填触发按钮与浮层容器；浮层必须真能被键盘打开/关闭"
+      },
+      "evidence": "断言 JSON",
+      "contract": "EXPERIENCE.md · Component Patterns",
+      "level": "full",
+      "groups": ["nav"]
+    },
+    {
+      "id": "UX-CMP-02",
+      "title": "提交按钮锁定",
+      "clause": "提交类按钮进入 loading 并锁定，失败回滚且保留输入",
+      "judgment": "连点两次只产生一次提交；失败后输入区值不变",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "submit_once",
+      "params": {
+        "button_selector": "",
+        "count_expr": "",
+        "expect_delta": 1,
+        "_fill": "count_expr 填页面可读的提交计数（如 window.__submitCount 或列表行数）；失败回滚部分由 L4 走查补"
+      },
+      "evidence": "断言 JSON + 截图",
+      "contract": "EXPERIENCE.md · Component Patterns",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-STA-01",
+      "title": "状态都能渲染",
+      "clause": "上表列出的状态都能渲染出来，且加载态不用孤零零的转圈",
+      "judgment": "逐界面、逐状态断言对应元素存在（空态含动作入口 / 骨架屏节点存在）",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "state_renders",
+      "params": {
+        "selectors": [],
+        "_fill": "列出各状态节点选择器（空态 / 骨架屏 / 错误态）；空数组会被判 skipped"
+      },
+      "evidence": "断言 JSON",
+      "contract": "EXPERIENCE.md · State Patterns",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-STA-02",
+      "title": "切换不丢输入",
+      "clause": "状态切换与刷新不丢用户输入与当前视图",
+      "judgment": "输入后切状态再回切，值与滚动位置保持",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "input_kept",
+      "params": {
+        "input_selector": "",
+        "value": "",
+        "switch_expr": "",
+        "back_expr": "",
+        "read_expr": "",
+        "_fill": "switch/back 填状态切换 JS 表达式；read_expr 返回 {value, scrollTop} 之类的快照"
+      },
+      "evidence": "断言 JSON",
+      "contract": "EXPERIENCE.md · State Patterns",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-INT-01",
+      "title": "不可逆操作二次确认",
+      "clause": "不可逆操作必须二次确认，且确认文案写明后果",
+      "judgment": "点击不可逆动作后出现确认层 + 文案含后果词；取消后状态不变",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "confirm_gate",
+      "params": {
+        "action_selector": "",
+        "confirm_selector": "",
+        "cancel_selector": "",
+        "effect_expr": "",
+        "_fill": "effect_expr 返回被操作数据的快照（如列表长度）；取消后必须与点击前一致"
+      },
+      "evidence": "断言 JSON",
+      "contract": "EXPERIENCE.md · Interaction Primitives",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-INT-02",
+      "title": "撤销窗口真实可用",
+      "clause": "声明的撤销窗口真实可用：撤销后数据与视图都回退",
+      "judgment": "执行 → 撤销 → 再读回，值等于执行前",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "undo_window",
+      "params": {
+        "action_selector": "",
+        "undo_selector": "",
+        "read_expr": "",
+        "expect_change": true,
+        "_fill": "撤销按钮可能只在 Toast 里短时出现；read_expr 要能读到数据态"
+      },
+      "evidence": "断言 JSON",
+      "contract": "EXPERIENCE.md · Interaction Primitives",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-FLW-01",
+      "title": "高潮节拍可脚本化复现",
+      "clause": "每条旅程的高潮节拍可脚本化复现（不给「人看着走了一遍」）",
+      "judgment": "旅程脚本跑通且断言到高潮节拍后的关键状态",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "journey",
+      "params": {
+        "steps": [],
+        "assert_expr": "",
+        "expected": "",
+        "_fill": "steps 支持 {click:选择器} / {expr:JS} / {key:键} / {wait:JS}；assert_expr 断言高潮后的关键状态"
+      },
+      "evidence": "断言 JSON",
+      "contract": "EXPERIENCE.md · Key Flows",
+      "level": "full",
+      "groups": ["nav"]
+    },
+    {
+      "id": "UX-FLW-02",
+      "title": "失败路径给得出下一步",
+      "clause": "失败路径给得出下一步动作",
+      "judgment": "触发失败后界面出现可恢复动作（重试/返回/保留输入）",
+      "layer": "L2+L4",
+      "check_kind": "runtime",
+      "check_rule": "recover_action",
+      "params": {
+        "fail_expr": "",
+        "fail_selector": "",
+        "action_selectors": ["[data-action=retry]", "[data-action=back]"],
+        "_fill": "fail_expr 注入失败（如切断 mock 接口）；action_selectors 列出可恢复动作"
+      },
+      "evidence": "断言 JSON + 走查结论",
+      "contract": "EXPERIENCE.md · Key Flows",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-INS-01",
+      "title": "反例零出现",
+      "clause": "反例清单里的东西在实现中零出现",
+      "judgment": "每条反例落成一个可静态扫的标记（样式名/组件名/文案），命中即违例",
+      "layer": "L1",
+      "check_kind": "static",
+      "check_rule": "no_pattern",
+      "params": {
+        "patterns": [],
+        "globs": ["*.css", "*.scss", "*.html", "*.js", "*.ts", "*.vue"],
+        "_fill": "把每条反例写成一条正则（如渐变背景 bg-gradient、卡片网格 class=card-grid）"
+      },
+      "evidence": "ux_gate/static_check.py JSON",
+      "contract": "EXPERIENCE.md · Inspiration & Anti-patterns",
+      "level": "targeted",
+      "groups": []
+    },
+    {
+      "id": "UX-A11Y-01",
+      "title": "严重级违例为 0",
+      "clause": "严重级（serious / critical）可访问性违例为 0",
+      "judgment": "注入 axe-core（或域对应检查器）后 serious + critical == 0",
+      "layer": "L2",
+      "check_kind": "runtime",
+      "check_rule": "axe_scan",
+      "params": {
+        "impact": ["serious", "critical"],
+        "_fill": "需要 --axe <axe.min.js>；未提供时本条 skipped（不当作通过）。desktop 域改用 UIA/AX 检查器，别硬套 axe"
+      },
+      "evidence": "axe JSON",
+      "contract": "EXPERIENCE.md · Accessibility Floor",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-A11Y-02",
+      "title": "无鼠标可完成主流程",
+      "clause": "无鼠标可完成主流程（desktop 域必须含快捷键）",
+      "judgment": "全程仅键盘走通主流程，焦点始终可见",
+      "layer": "L2+L4",
+      "check_kind": "runtime",
+      "check_rule": "key_probe",
+      "params": {
+        "setup_expr": "",
+        "probe_expr": "",
+        "key": {"key": "k", "ctrl": true},
+        "_fill": "probe_expr 填按键后应变化的可读状态；快捷键表全量走通由 L4 走查补"
+      },
+      "evidence": "断言 JSON + 走查结论",
+      "contract": "EXPERIENCE.md · Accessibility Floor",
+      "level": "full",
+      "groups": ["status"]
+    },
+    {
+      "id": "UX-RWD-01",
+      "title": "三档无横向溢出",
+      "clause": "最小尺寸 / 默认尺寸 / 最大化三档都无横向溢出",
+      "judgment": "每档 scrollWidth <= clientWidth，且三档均无元素越界出视口",
+      "layer": "L2+L3",
+      "check_kind": "runtime",
+      "check_rule": "no_h_overflow",
+      "params": {
+        "sizes": [
+          {"width": 1024, "height": 700},
+          {"width": 1280, "height": 800},
+          {"width": 1600, "height": 900}
+        ],
+        "_fill": "三档尺寸按项目最小/默认/目标屏改；desktop 域用窗口最小/默认/最大化"
+      },
+      "evidence": "断言 JSON + 像素基线",
+      "contract": "EXPERIENCE.md · Responsive & Platform",
+      "level": "full",
+      "groups": ["nav"]
+    },
+    {
+      "id": "UX-PIX-01",
+      "title": "像素基线不漂",
+      "clause": "关键页的像素基线不漂（只比改动页，阈值按 2× 观察峰值）",
+      "judgment": "pixelmatch（threshold=0.1 忽略 AA）maxDiffPixelRatio <= 0.01，且 diff 像素 ≤ 峰值×2",
+      "layer": "L3",
+      "check_kind": "pixel",
+      "check_rule": "pixel_baseline",
+      "params": {
+        "size": {"width": 1280, "height": 800},
+        "dpr": 1.0,
+        "_fill": "关键页各写一条（改 id 为 UX-PIX-02…）；取样前固定尺寸/DPR/主题/字体并关动画"
+      },
+      "evidence": "基线图 + diff 图（runtime_assert.py --baseline）",
+      "contract": "EXPERIENCE.md · Responsive & Platform",
+      "level": "targeted",
+      "groups": ["pix"]
+    }
+  ]
+}
